@@ -1,3 +1,6 @@
+use std::fmt;
+use std::fmt::Formatter;
+
 struct Matrix {
     data: Vec<Vec<i32>>,
 }
@@ -12,10 +15,25 @@ impl Matrix {
     }
 }
 
+impl fmt::Display for Matrix {
+    fn fmt(&self, f: &mut Formatter) -> fmt::Result {
+        for row in &self.data {
+            for elem in row {
+                println!("{}", elem);
+            }
+        }
+        Ok (())
+    }
+}
+
 fn main() {
-    let a: Vec<i32> = vec![1,2,3];
-    let b: Vec<i32> = vec![2,3,4];
-    println!("Inner product is {}", inner_product(&a, &b));
+    let a1: Vec<i32> = vec![1,2,3];
+    let a2: Vec<i32> = vec![4,5,6];
+    let b1: Vec<i32> = vec![7,8,9];
+    let b2: Vec<i32> = vec![10,11,12];
+    let a_mat = Matrix::new(vec![a1, a2]);
+    let b_mat = Matrix::new(vec![b1, b2]);
+    println!("Matmul is {}", matmul(&a_mat, &b_mat));
 }
 
 
@@ -30,6 +48,21 @@ fn has_uniform_row_length(data: &Vec<Vec<i32>>) -> bool {
     true
 }
 
+fn matmul(a: &Matrix, b: &Matrix) -> Matrix {
+    let mut c_data: Vec<Vec<i32>> = vec![];
+    for i in 0..a.data.len()-1 {
+        let mut c_row: Vec<i32> = vec![];
+        for j in 0..a.data[i].len()-1 {
+            c_row.push(a.data[i][j] * b.data[j][i]);
+        }
+        c_data.push(c_row);
+    }
+    let matrix = Matrix { data: c_data };
+    matrix
+}
+
+
+// Possibly not needed
 fn inner_product(a: &Vec<i32>, b: &Vec<i32>) -> i32 {
     let mut c: i32 = 0;
     for i in 0..a.len() {
