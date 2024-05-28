@@ -1,6 +1,7 @@
 use std::fmt;
 use std::fmt::Formatter;
 
+#[derive(Debug)]
 struct Matrix {
     data: Vec<Vec<i32>>,
 }
@@ -20,6 +21,12 @@ impl Matrix {
             col.push(self.data[i][col_index as usize]);
         }
         col
+    }
+}
+
+impl PartialEq for Matrix {
+    fn eq(&self, other: &Self) -> bool {
+        self.data == other.data
     }
 }
 
@@ -71,7 +78,7 @@ fn matmul(a: &Matrix, b: &Matrix) -> Matrix {
     }
     for i in 0..a.data.len() {
         let mut c_row: Vec<i32> = vec![];
-        for j in 0..a.data[i].len() {
+        for j in 0..b.data[i].len() {
             let b_col: Vec<i32> = b.get_column_vector(j as i32);
             c_row.push(inner_product(&a.data[i], &b_col));
         }
@@ -104,5 +111,18 @@ mod tests {
         let incompat_b = Matrix { data: vec![vec![1,2],vec![3,4], vec![5,6]] };
         assert_ne!(true, is_matmul_compatible(&incompat_a, &incompat_b));
 
+    }
+
+    // TODO: This test is failing, which means `matmul` is not working as it should
+    #[test]
+    fn test_matmul_correctness() {
+        let a1: Vec<i32> = vec![1,2];
+        let a2: Vec<i32> = vec![4,5];
+        let b1: Vec<i32> = vec![7,8,9,46];
+        let b2: Vec<i32> = vec![10,11,3,12];
+        let a_mat = Matrix::new(vec![a1, a2]);
+        let b_mat = Matrix::new(vec![b1, b2]);
+        let c: Matrix = Matrix::new(vec![vec![27, 30, 15, 70], vec![78, 87, 51, 244]]);
+        assert_eq!(matmul(&a_mat,&b_mat), c);
     }
 } 
