@@ -1,6 +1,8 @@
 use std::fmt;
 use std::fmt::Formatter;
+use std::ops::Mul;
 
+// TODO: Check if docstrings are not idiomatic 
 #[derive(Debug)]
 struct Matrix {
     data: Vec<Vec<i32>>,
@@ -24,12 +26,14 @@ impl Matrix {
     }
 }
 
+// Define binary `==` operator for Matrix
 impl PartialEq for Matrix {
     fn eq(&self, other: &Self) -> bool {
         self.data == other.data
     }
 }
 
+// Implement `fmt::Display` to define effect of `println` for Matrix
 impl fmt::Display for Matrix {
     fn fmt(&self, f: &mut Formatter) -> fmt::Result {
         println!("\n");
@@ -42,6 +46,27 @@ impl fmt::Display for Matrix {
     }
 }
 
+// TODO: Consider if passing references would be better
+impl Mul for Matrix {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        let mut c_data: Vec<Vec<i32>> = vec![];
+        if !is_matmul_compatible(&self, &rhs) {
+            panic!("Matrices are not compatible for multiplication")
+        }
+        for i in 0..self.data.len() {
+            let mut c_row: Vec<i32> = vec![];
+            for j in 0..rhs.data[i].len() {
+                let b_col: Vec<i32> = rhs.get_column_vector(j as i32);
+                c_row.push(inner_product(&self.data[i], &b_col));
+            }
+            c_data.push(c_row);
+        }
+        let matrix = Matrix { data: c_data };
+        matrix
+    }
+}
+
 fn main() {
     let a1: Vec<i32> = vec![1,2];
     let a2: Vec<i32> = vec![4,5];
@@ -49,7 +74,7 @@ fn main() {
     let b2: Vec<i32> = vec![10,11];
     let a_mat = Matrix::new(vec![a1, a2]);
     let b_mat = Matrix::new(vec![b1, b2]);
-    println!("Matmul is {}", matmul(&a_mat, &b_mat));
+    //println!("Matmul is {}", matmul(&a_mat, &b_mat));
 }
 
 
@@ -64,28 +89,13 @@ fn has_uniform_row_length(data: &Vec<Vec<i32>>) -> bool {
     true
 }
 
+// Check if matrix A and B are able to be multiplied.
+// This means the column rank of A must equal the row rank of B
 fn is_matmul_compatible(a: &Matrix, b: &Matrix) -> bool {
     let num_cols_a: usize = a.data[0].len();
     let num_rows_b: usize = b.data.len();
 
     num_cols_a == num_rows_b
-}
-
-fn matmul(a: &Matrix, b: &Matrix) -> Matrix {
-    let mut c_data: Vec<Vec<i32>> = vec![];
-    if !is_matmul_compatible(a, b) {
-        panic!("Matrices are not compatible for multiplication")
-    }
-    for i in 0..a.data.len() {
-        let mut c_row: Vec<i32> = vec![];
-        for j in 0..b.data[i].len() {
-            let b_col: Vec<i32> = b.get_column_vector(j as i32);
-            c_row.push(inner_product(&a.data[i], &b_col));
-        }
-        c_data.push(c_row);
-    }
-    let matrix = Matrix { data: c_data };
-    matrix
 }
 
 
@@ -122,6 +132,6 @@ mod tests {
         let a_mat = Matrix::new(vec![a1, a2]);
         let b_mat = Matrix::new(vec![b1, b2]);
         let c: Matrix = Matrix::new(vec![vec![27, 30, 15, 70], vec![78, 87, 51, 244]]);
-        assert_eq!(matmul(&a_mat,&b_mat), c);
+        assert_eq!(a_mat * b_mat, c);
     }
-} 
+}
