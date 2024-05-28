@@ -113,7 +113,6 @@ mod tests {
 
     }
 
-    // TODO: This test is failing, which means `matmul` is not working as it should
     #[test]
     fn test_matmul_correctness() {
         let a1: Vec<i32> = vec![1,2];
