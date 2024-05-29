@@ -2,10 +2,25 @@
 Linear algebra implementations in Rust with bindings for Python.
 
 
-```bash
-python3 -c "import rublas; print(rublas.matmul([[1,2],[3,4]],[[5,6],[7,8]]))"
-[[19, 22], [43, 50]]
+```python
+import rublas
+
+mat_a = [
+    [1,2],
+    [4,5],
+    [1,2],
+]
+
+mat_b = [
+    [7,8,9,46],
+    [10,11,3,12],
+]
+
+if __name__ == "__main__":
+    print(rublas.matmul(mat_a, mat_b)) # [[27, 30, 15, 70], [78, 87, 51, 244], [27, 30, 15, 70]]
 ```
+
+
 
 ## Installation
 Make sure Rust and Python are installed on your machine, then clone the repository.
