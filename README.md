@@ -1,6 +1,12 @@
 ## ruBLAS
 Linear algebra implementations in Rust with bindings for Python.
 
+
+```bash
+python3 -c "import rublas; print(rublas.matmul([[1,2],[3,4]],[[5,6],[7,8]]))"
+[[19, 22], [43, 50]]
+```
+
 ## Installation
 Make sure Rust and Python are installed on your machine, then clone the repository.
 
@@ -14,16 +20,9 @@ Install `maturin` via pip.
 pip install maturin
 ```
 
-Build the crate and install it as a python module:
+Finally, build the crate and install it as a python module.
 
 ```bash
 cd ruBLAS
 maturin develop
-```
-
-For confirmation that the installation was successful, you can run this script
-to see if the module is functioning properly.
-
-```bash
-python3 -m matmul
 ```
