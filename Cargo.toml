@@ -1,10 +1,10 @@
 [package]
-name = "matmul"
+name = "rublas"
 version = "0.1.0"
 edition = "2021"
 
 [lib]
-name = "matmul"
+name = "rublas"
 crate-type = ["cdylib"]
 
 [dependencies]
