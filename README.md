@@ -21,7 +21,8 @@ cd ruBLAS
 maturin develop
 ```
 
-For confirmation that the installation was successful, run:
+For confirmation that the installation was successful, you can run this script
+to see if the module is functioning properly.
 
 ```bash
 python3 -m matmul
