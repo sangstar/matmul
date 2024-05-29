@@ -7,6 +7,8 @@ use std::ops::Mul;
 #[derive(Debug)]
 pub struct Matrix {
     pub data: Vec<Vec<i32>>,
+    num_rows: i32,
+    num_cols: i32
 }
 
 impl Matrix {
@@ -14,7 +16,9 @@ impl Matrix {
         if !has_uniform_row_length(&data) {
             panic!("Vectors must have same length");
         }
-        let matrix = Matrix { data };
+        let num_rows = get_num_rows(&data);
+        let num_cols = get_num_cols(&data);
+        let matrix = Matrix { data, num_rows, num_cols };
         matrix
     }
 
@@ -26,6 +30,16 @@ impl Matrix {
         col
     }
 }
+
+
+fn get_num_rows(data: &Vec<Vec<i32>>) -> i32 {
+    data.len() as i32
+}
+
+fn get_num_cols(data: &Vec<Vec<i32>>) -> i32 {
+    data[0].len() as i32
+}
+
 
 // Define binary `==` operator for Matrix
 impl PartialEq for Matrix {
@@ -54,15 +68,15 @@ impl Mul for Matrix {
         if !is_matmul_compatible(&self, &rhs) {
             panic!("Matrices are not compatible for multiplication")
         }
-        for i in 0..self.data.len() {
+        for i in 0..self.num_rows {
             let mut c_row: Vec<i32> = vec![];
-            for j in 0..rhs.data[i].len() {
+            for j in 0..rhs.num_cols {
                 let b_col: Vec<i32> = rhs.get_column_vector(j as i32);
-                c_row.push(inner_product(&self.data[i], &b_col));
+                c_row.push(inner_product(&self.data[i as usize], &b_col));
             }
             c_data.push(c_row);
         }
-        let matrix = Matrix { data: c_data };
+        let matrix = Matrix::new(c_data);
         matrix
     }
 }
@@ -103,12 +117,12 @@ mod tests {
 
     #[test]
     fn test_is_matmul_compatible() {
-        let compat_a = Matrix { data:  vec![vec![1,2],vec![3,4]] };
-        let compat_b = Matrix  { data:  vec![vec![1,2,3,4],vec![3,4,5,7]] };    
+        let compat_a = Matrix::new(vec![vec![1,2],vec![3,4]]);
+        let compat_b = Matrix::new(vec![vec![1,2,3,4],vec![3,4,5,7]]);
         assert_eq!(true, is_matmul_compatible(&compat_a, &compat_b));
 
-        let incompat_a = Matrix { data: vec![vec![1,2],vec![3,4]] };
-        let incompat_b = Matrix { data: vec![vec![1,2],vec![3,4], vec![5,6]] };
+        let incompat_a = Matrix::new(vec![vec![1,2],vec![3,4]]);
+        let incompat_b = Matrix::new(vec![vec![1,2],vec![3,4], vec![5,6]]);
         assert_ne!(true, is_matmul_compatible(&incompat_a, &incompat_b));
 
     }
@@ -117,11 +131,12 @@ mod tests {
     fn test_matmul_correctness() {
         let a1: Vec<i32> = vec![1,2];
         let a2: Vec<i32> = vec![4,5];
+        let a3: Vec<i32> = vec![1,3];
         let b1: Vec<i32> = vec![7,8,9,46];
         let b2: Vec<i32> = vec![10,11,3,12];
-        let a_mat = Matrix::new(vec![a1, a2]);
+        let a_mat = Matrix::new(vec![a1, a2, a3]);
         let b_mat = Matrix::new(vec![b1, b2]);
-        let c: Matrix = Matrix::new(vec![vec![27, 30, 15, 70], vec![78, 87, 51, 244]]);
+        let c: Matrix = Matrix::new(vec![vec![27, 30, 15, 70], vec![78, 87, 51, 244], vec![37, 41, 18, 82]]);
         assert_eq!(a_mat * b_mat, c);
     }
 }
