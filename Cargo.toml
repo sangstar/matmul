@@ -3,6 +3,9 @@ name = "matmul"
 version = "0.1.0"
 edition = "2021"
 
+[lib]
+name = "matmul"
+crate-type = ["cdylib"]
+
 [dependencies]
-webbrowser = "0.5.5"
-actix-web = "4.0.0-beta.8"
+pyo3 = { version = "0.15", features = ["extension-module"] }
