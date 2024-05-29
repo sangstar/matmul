@@ -16,7 +16,8 @@ mat_b = [
     [10,11, 3, 12],
 ]
 
-print(rublas.matmul(mat_a, mat_b)) # [[27, 30, 15, 70], [78, 87, 51, 244], [27, 30, 15, 70]]
+print(rublas.matmul(mat_a, mat_b)) 
+# Outputs [[27, 30, 15, 70], [78, 87, 51, 244], [27, 30, 15, 70]]
 ```
 
 
@@ -34,7 +35,7 @@ Install `maturin` via pip.
 pip install maturin
 ```
 
-Finally, build the crate and install it as a python module.
+Finally, build the crate and install it as a Python module.
 
 ```bash
 cd ruBLAS
