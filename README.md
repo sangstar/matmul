@@ -1,5 +1,5 @@
 ## ruBLAS
-Linear algebra implementations in Rust, with bindings for Python.
+Linear algebra implementations in Rust with bindings for Python.
 
 ## Installation
 Make sure Rust and Python are installed on your machine, then clone the repository.
