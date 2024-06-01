@@ -5,6 +5,7 @@ use std::ops::Add;
 use pyo3::prelude::*;
 
 // TODO: Check if docstrings are not idiomatic 
+// TODO: Add Python-side docstrings
 #[derive(Debug)]
 #[derive(Clone)]
 #[pyclass]
@@ -15,8 +16,7 @@ pub struct Matrix {
 }
 
 
-
-// Use the #[pymethods] decorator to define the Pythonic methods for Matrix
+// Define methods for Matrix
 #[pymethods]
 impl Matrix {
     fn __mul__(&self, rhs: Matrix) -> Self {
