@@ -11,5 +11,12 @@ mat_b = rublas.Matrix([
     [10,11, 3, 12],
 ])
 
+mat_c = rublas.Matrix([
+    [32, 2],
+    [1,  3],
+    [-3, 4]
+])
+
 if __name__ == "__main__":
     print(mat_a * mat_b)
+    print(mat_a + mat_c)

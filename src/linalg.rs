@@ -1,6 +1,7 @@
 use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Mul;
+use std::ops::Add;
 use pyo3::prelude::*;
 
 // TODO: Check if docstrings are not idiomatic 
@@ -21,6 +22,11 @@ impl Matrix {
     fn __mul__(&self, rhs: Matrix) -> Self {
         let mat: Matrix = self.clone();
         mat.mul(rhs)
+    }
+
+    fn __add__(&self, rhs: Matrix) -> Self {
+        let mat: Matrix = self.clone();
+        mat.add(rhs)
     }
 
     fn __repr__(&self) -> String {
@@ -113,6 +119,25 @@ impl Mul for Matrix {
     }
 }
 
+impl Add for Matrix {
+    type Output = Self;
+    fn add(self, rhs: Self) -> Self {
+        let mut c_data: Vec<Vec<i32>> = vec![];
+        if !is_add_compatible(&self, &rhs) {
+            panic!("Matrices must have same dimension for adding")
+        }
+        for i in 0..self.num_rows {
+            let mut c_row: Vec<i32> = vec![];
+            for j in 0..self.num_cols {
+                c_row.push(&self.data[i as usize][j as usize] + &rhs.data[i as usize][j as usize])
+            }
+            c_data.push(c_row);
+        }
+        let matrix = Matrix::new(c_data);
+        matrix
+    }
+}
+
 
 // TODO: Optimize later
 fn has_uniform_row_length(data: &Vec<Vec<i32>>) -> bool {
@@ -132,6 +157,15 @@ fn is_matmul_compatible(a: &Matrix, b: &Matrix) -> bool {
     let num_rows_b: usize = b.data.len();
 
     num_cols_a == num_rows_b
+}
+
+fn is_add_compatible(a: &Matrix, b: &Matrix) -> bool {
+    for i in 0..a.num_rows {
+        if a.data[i as usize].len() != b.data[i as usize].len() {
+            return false;
+        }
+    }
+    true
 }
 
 
