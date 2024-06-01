@@ -6,6 +6,7 @@ use linalg::Matrix;
 
 #[pymodule]
 fn rublas(py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_class::<Matrix>()?;
     m.add_function(wrap_pyfunction!(matmul, m)?)?;
     Ok(())
 }

@@ -1,18 +1,49 @@
 use std::fmt;
 use std::fmt::Formatter;
 use std::ops::Mul;
-
+use pyo3::prelude::*;
 
 // TODO: Check if docstrings are not idiomatic 
 #[derive(Debug)]
+#[derive(Clone)]
+#[pyclass]
 pub struct Matrix {
     pub data: Vec<Vec<i32>>,
     num_rows: i32,
     num_cols: i32
 }
 
+
+
+// Use the #[pymethods] decorator to define the Pythonic methods for Matrix
+#[pymethods]
 impl Matrix {
-    pub fn new(data: Vec<Vec<i32>>) -> Matrix {
+    fn __mul__(&self, rhs: Matrix) -> Self {
+        let mat: Matrix = self.clone();
+        mat.mul(rhs)
+    }
+
+    fn __repr__(&self) -> String {
+        let mut output = String::from("");
+        for row in &self.data {
+            output += "[";
+            for &value in row {
+                output += &value.to_string();
+                output += " ";
+            }
+            output += "]\n";
+        }
+        output
+    }
+
+    #[new]
+    fn init(data: Vec<Vec<i32>>) -> Matrix {
+       Matrix::new(data)
+    }
+}
+
+impl Matrix {
+    pub fn new(data: Vec<Vec<i32>>) -> Self {
         if !has_uniform_row_length(&data) {
             panic!("Vectors must have same length");
         }
@@ -29,6 +60,7 @@ impl Matrix {
         }
         col
     }
+
 }
 
 
@@ -63,7 +95,7 @@ impl fmt::Display for Matrix {
 
 impl Mul for Matrix {
     type Output = Self;
-    fn mul(self, rhs: Self) -> Self::Output {
+    fn mul(self, rhs: Self) -> Self {
         let mut c_data: Vec<Vec<i32>> = vec![];
         if !is_matmul_compatible(&self, &rhs) {
             panic!("Matrices are not compatible for multiplication")
